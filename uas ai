@@ -1,0 +1,1139 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "execution_count": 5,
+      "metadata": {
+        "id": "J1HZrrch76PF"
+      },
+      "outputs": [],
+      "source": [
+        "dataset = pd.read_csv(\"prediksi_sepakbola.csv\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "n2Dr4SfQ96Ey",
+        "outputId": "c48412d2-27be-4754-e1d1-ee2df0821b63"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "   No    Pelatih Kandang Sendiri Latihan Stamina  Mental Menang\n",
+              "0   1  Pengetian              Ya   Rutin    Kuat      PD     Ya\n",
+              "1   2  Pengetian              Ya   Rutin    Kuat  Gerogi  Tidak\n",
+              "2   3  Pengetian           Tidak  Jarang   Lemah  Gerogi  Tidak\n",
+              "3   4    Menekan              Ya   Rutin    Kuat      PD     Ya\n",
+              "4   5    Menekan           Tidak   Rutin   Lemah  Gerogi  Tidak"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-5a92cfd4-b325-4c14-8c3c-039ef440b942\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>No</th>\n",
+              "      <th>Pelatih</th>\n",
+              "      <th>Kandang Sendiri</th>\n",
+              "      <th>Latihan</th>\n",
+              "      <th>Stamina</th>\n",
+              "      <th>Mental</th>\n",
+              "      <th>Menang</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>Pengetian</td>\n",
+              "      <td>Ya</td>\n",
+              "      <td>Rutin</td>\n",
+              "      <td>Kuat</td>\n",
+              "      <td>PD</td>\n",
+              "      <td>Ya</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>Pengetian</td>\n",
+              "      <td>Ya</td>\n",
+              "      <td>Rutin</td>\n",
+              "      <td>Kuat</td>\n",
+              "      <td>Gerogi</td>\n",
+              "      <td>Tidak</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>Pengetian</td>\n",
+              "      <td>Tidak</td>\n",
+              "      <td>Jarang</td>\n",
+              "      <td>Lemah</td>\n",
+              "      <td>Gerogi</td>\n",
+              "      <td>Tidak</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>Menekan</td>\n",
+              "      <td>Ya</td>\n",
+              "      <td>Rutin</td>\n",
+              "      <td>Kuat</td>\n",
+              "      <td>PD</td>\n",
+              "      <td>Ya</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>Menekan</td>\n",
+              "      <td>Tidak</td>\n",
+              "      <td>Rutin</td>\n",
+              "      <td>Lemah</td>\n",
+              "      <td>Gerogi</td>\n",
+              "      <td>Tidak</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-5a92cfd4-b325-4c14-8c3c-039ef440b942')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-5a92cfd4-b325-4c14-8c3c-039ef440b942 button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-5a92cfd4-b325-4c14-8c3c-039ef440b942');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 7
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.shape"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "QCXx9pJo-AsR",
+        "outputId": "31b88f5b-9857-42a8-d5e3-26b9939445ee"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(60, 7)"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 8
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.info()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3JrBp1OG-LAZ",
+        "outputId": "1ac80135-e09e-4b94-b2dc-1085f794d541"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 60 entries, 0 to 59\n",
+            "Data columns (total 7 columns):\n",
+            " #   Column           Non-Null Count  Dtype \n",
+            "---  ------           --------------  ----- \n",
+            " 0   No               60 non-null     int64 \n",
+            " 1   Pelatih          60 non-null     object\n",
+            " 2   Kandang Sendiri  60 non-null     object\n",
+            " 3   Latihan          60 non-null     object\n",
+            " 4   Stamina          60 non-null     object\n",
+            " 5   Mental           60 non-null     object\n",
+            " 6   Menang           60 non-null     object\n",
+            "dtypes: int64(1), object(6)\n",
+            "memory usage: 3.4+ KB\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.isnull().values.any()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "oBt-Z2p0-NKh",
+        "outputId": "519c565c-6c05-48c0-d771-7eaa6bb0a4ea"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "False"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 12
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset[\"Pelatih\"].value_counts()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vuzKRL12-OOh",
+        "outputId": "3284caa8-8f3d-43da-c749-43d5c543ca7e"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Pengetian    37\n",
+              "Menekan      23\n",
+              "Name: Pelatih, dtype: int64"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 13
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **Kita akan lihat persentase kemenangan pelatih dari tipe melatih**"
+      ],
+      "metadata": {
+        "id": "Kcqf731g-UVh"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "tipe_pelatih =  dataset.loc[dataset['Menang'] == \"Ya\", 'Pelatih']"
+      ],
+      "metadata": {
+        "id": "R_v3d8mc-WmJ"
+      },
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "tipe_pelatih.value_counts()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5_hDGTF8-aQJ",
+        "outputId": "ce36312a-d728-4dc9-84e1-a33582f7cc72"
+      },
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Pengetian    26\n",
+              "Menekan       9\n",
+              "Name: Pelatih, dtype: int64"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 15
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Menghitung persentase kemenangan dari total laga yang menghasilkan **kemenangan** **teks tebal**"
+      ],
+      "metadata": {
+        "id": "RsD8a8km-gTp"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pengertian = dataset.loc[dataset['Pelatih'] == \"Pengetian\"]\n",
+        "Menekan = dataset.loc[dataset['Pelatih'] == \"Menekan\"]"
+      ],
+      "metadata": {
+        "id": "MQ_rnQQ2-jyS"
+      },
+      "execution_count": 16,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "p_menang = len(pengertian.loc[pengertian[\"Menang\"] == \"Ya\"])/len(pengertian[\"Menang\"])\n",
+        "m_menang = len(Menekan.loc[Menekan[\"Menang\"] == \"Ya\"])/len(Menekan[\"Menang\"])"
+      ],
+      "metadata": {
+        "id": "Y5AjbxWO-oiq"
+      },
+      "execution_count": 17,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Tipe Pengertian : Match \",len(pengertian[\"Menang\"]),\"\\nMenang : \",len(pengertian.loc[pengertian[\"Menang\"] == \"Ya\"]),\"\\nKalah : \",len(pengertian.loc[pengertian[\"Menang\"] == \"Tidak\"]))\n",
+        "print(\"Tipe Menekan : Match \",len(Menekan[\"Menang\"]),\"\\nMenang : \",len(Menekan.loc[Menekan[\"Menang\"] == \"Ya\"]),\"\\nKalah : \",len(Menekan.loc[Menekan[\"Menang\"] == \"Tidak\"]))\n",
+        "print(\"Persentase Tipe Pengertian: {0:.2f} %\".format(100 * p_menang))  \n",
+        "print(\"Persentase Tipe Menekan: {0:.2f} %\".format(100 * m_menang))  "
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "qNNfFggD-qK6",
+        "outputId": "af8bd5ad-33be-4c56-bd19-f82c9e9cbefe"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Tipe Pengertian : Match  37 \n",
+            "Menang :  26 \n",
+            "Kalah :  11\n",
+            "Tipe Menekan : Match  23 \n",
+            "Menang :  9 \n",
+            "Kalah :  14\n",
+            "Persentase Tipe Pengertian: 70.27 %\n",
+            "Persentase Tipe Menekan: 39.13 %\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **Dari data diatas, terlihat Pelatih Tipe Pengertian lebih unggul, mungkin dikarenakan faktor match yang lebih banyak dimainkan oleh pelatih pengertian dibandingkan pelatih tipe menekan.**"
+      ],
+      "metadata": {
+        "id": "lEqdhHa8-tga"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Data Prediksi Kemenangan dari Pelatih sudah, nah sekarang Prediksi Kemenangan dari **Pemain**"
+      ],
+      "metadata": {
+        "id": "LoFkDlLv-3f5"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pelatih = {\"Pengetian\" : 0, \"Menekan\" : 1}\n",
+        "main = {\"Ya\" : 0, \"Tidak\" : 1}\n",
+        "latihan = {\"Rutin\" : 0, \"Jarang\" : 1}\n",
+        "stamina = {\"Kuat\" : 0, \"Lemah\" : 1}\n",
+        "mental = {\"PD\" : 0, \"Gerogi\" : 1}\n",
+        "menang = {\"Ya\" : 0, \"Tidak\" : 1}\n",
+        "dataset[\"Pelatih\"] = dataset[\"Pelatih\"].map(pelatih)\n",
+        "dataset[\"Kandang Sendiri\"] = dataset[\"Kandang Sendiri\"].map(main)\n",
+        "dataset[\"Latihan\"] = dataset[\"Latihan\"].map(latihan)\n",
+        "dataset[\"Stamina\"] = dataset[\"Stamina\"].map(stamina)\n",
+        "dataset[\"Mental\"] = dataset[\"Mental\"].map(mental)\n",
+        "dataset[\"Menang\"] = dataset[\"Menang\"].map(menang)"
+      ],
+      "metadata": {
+        "id": "qhZH0mMz-smS"
+      },
+      "execution_count": 19,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "8UJbVlY3_KL4",
+        "outputId": "69989139-7e65-4f8b-a5e0-da9318499ed6"
+      },
+      "execution_count": 20,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "   No  Pelatih  Kandang Sendiri  Latihan  Stamina  Mental  Menang\n",
+              "0   1        0                0      0.0        0       0       0\n",
+              "1   2        0                0      0.0        0       1       1\n",
+              "2   3        0                1      1.0        1       1       1\n",
+              "3   4        1                0      0.0        0       0       0\n",
+              "4   5        1                1      0.0        1       1       1"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-fc6d2995-c846-44a1-a261-87e01844953d\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>No</th>\n",
+              "      <th>Pelatih</th>\n",
+              "      <th>Kandang Sendiri</th>\n",
+              "      <th>Latihan</th>\n",
+              "      <th>Stamina</th>\n",
+              "      <th>Mental</th>\n",
+              "      <th>Menang</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0.0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0.0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1.0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0.0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0.0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-fc6d2995-c846-44a1-a261-87e01844953d')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-fc6d2995-c846-44a1-a261-87e01844953d button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-fc6d2995-c846-44a1-a261-87e01844953d');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 20
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset = dataset.fillna(0)\n",
+        "latihan = dataset['Latihan'].astype(int)\n",
+        "dataset['Latihan'] = latihan"
+      ],
+      "metadata": {
+        "id": "pCeBAHcV_T3z"
+      },
+      "execution_count": 21,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "AOU0dDao_VwC",
+        "outputId": "34fb2931-ef7f-430b-86eb-6ea949ec3c2b"
+      },
+      "execution_count": 22,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "   No  Pelatih  Kandang Sendiri  Latihan  Stamina  Mental  Menang\n",
+              "0   1        0                0        0        0       0       0\n",
+              "1   2        0                0        0        0       1       1\n",
+              "2   3        0                1        1        1       1       1\n",
+              "3   4        1                0        0        0       0       0\n",
+              "4   5        1                1        0        1       1       1"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-6124b2c0-f1b3-4658-8268-edb5bb72238b\">\n",
+              "    <div class=\"colab-df-container\">\n",
+              "      <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>No</th>\n",
+              "      <th>Pelatih</th>\n",
+              "      <th>Kandang Sendiri</th>\n",
+              "      <th>Latihan</th>\n",
+              "      <th>Stamina</th>\n",
+              "      <th>Mental</th>\n",
+              "      <th>Menang</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "      <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-6124b2c0-f1b3-4658-8268-edb5bb72238b')\"\n",
+              "              title=\"Convert this dataframe to an interactive table.\"\n",
+              "              style=\"display:none;\">\n",
+              "        \n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M0 0h24v24H0V0z\" fill=\"none\"/>\n",
+              "    <path d=\"M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z\"/><path d=\"M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z\"/>\n",
+              "  </svg>\n",
+              "      </button>\n",
+              "      \n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      flex-wrap:wrap;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "      <script>\n",
+              "        const buttonEl =\n",
+              "          document.querySelector('#df-6124b2c0-f1b3-4658-8268-edb5bb72238b button.colab-df-convert');\n",
+              "        buttonEl.style.display =\n",
+              "          google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "        async function convertToInteractive(key) {\n",
+              "          const element = document.querySelector('#df-6124b2c0-f1b3-4658-8268-edb5bb72238b');\n",
+              "          const dataTable =\n",
+              "            await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                     [key], {});\n",
+              "          if (!dataTable) return;\n",
+              "\n",
+              "          const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "            '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "            + ' to learn more about interactive tables.';\n",
+              "          element.innerHTML = '';\n",
+              "          dataTable['output_type'] = 'display_data';\n",
+              "          await google.colab.output.renderOutput(dataTable, element);\n",
+              "          const docLink = document.createElement('div');\n",
+              "          docLink.innerHTML = docLinkHtml;\n",
+              "          element.appendChild(docLink);\n",
+              "        }\n",
+              "      </script>\n",
+              "    </div>\n",
+              "  </div>\n",
+              "  "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 22
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "dataset.info()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Dp5fsNpv_X3a",
+        "outputId": "f031a769-bcaf-4c50-ede4-79be3eeb5165"
+      },
+      "execution_count": 23,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 60 entries, 0 to 59\n",
+            "Data columns (total 7 columns):\n",
+            " #   Column           Non-Null Count  Dtype\n",
+            "---  ------           --------------  -----\n",
+            " 0   No               60 non-null     int64\n",
+            " 1   Pelatih          60 non-null     int64\n",
+            " 2   Kandang Sendiri  60 non-null     int64\n",
+            " 3   Latihan          60 non-null     int64\n",
+            " 4   Stamina          60 non-null     int64\n",
+            " 5   Mental           60 non-null     int64\n",
+            " 6   Menang           60 non-null     int64\n",
+            "dtypes: int64(7)\n",
+            "memory usage: 3.4 KB\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "x = dataset.iloc[:, 1:6].values #kondisi\n",
+        "y = dataset.iloc[:, -1].values #label"
+      ],
+      "metadata": {
+        "id": "HuSSlFF2_ZQc"
+      },
+      "execution_count": 24,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "\n",
+        "validation_size = 0.20\n",
+        "num_trees = 100\n",
+        "seed = 7\n",
+        "x_train, x_test, y_train, y_test=train_test_split(x, y, test_size=validation_size, random_state=seed)"
+      ],
+      "metadata": {
+        "id": "YyZApHic_bTS"
+      },
+      "execution_count": 25,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Dataset Asli Menang       : {0} ({1:0.2f}%)\".format(len(dataset.loc[dataset['Menang'] == 0]), (len(dataset.loc[dataset['Menang'] == 0])/len(dataset.index)) * 100.0))\n",
+        "print(\"Dataset Asli Kalah     : {0} ({1:0.2f}%)\".format(len(dataset.loc[dataset['Menang'] == 1]), (len(dataset.loc[dataset['Menang'] == 1])/len(dataset.index)) * 100.0))\n",
+        "print(\"\")\n",
+        "print(\"Dataset Training Menang   : {0} ({1:0.2f}%)\".format(len(y_train[y_train[:] == 0]), (len(y_train[y_train[:] == 0])/len(y_train) * 100.0)))\n",
+        "print(\"Dataset Training Kalah : {0} ({1:0.2f}%)\".format(len(y_train[y_train[:] == 1]), (len(y_train[y_train[:] == 1])/len(y_train) * 100.0)))\n",
+        "print(\"\")\n",
+        "print(\"Dataset Test Menang      : {0} ({1:0.2f}%)\".format(len(y_test[y_test[:] == 0]), (len(y_test[y_test[:] == 0])/len(y_test) * 100.0)))\n",
+        "print(\"Dataset Test Kalah     : {0} ({1:0.2f}%)\".format(len(y_test[y_test[:] == 1]), (len(y_test[y_test[:] == 1])/len(y_test) * 100.0)))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "HL6FAMeI_eCh",
+        "outputId": "039316fe-2b8a-4987-8eb7-21009246818b"
+      },
+      "execution_count": 26,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Dataset Asli Menang       : 35 (58.33%)\n",
+            "Dataset Asli Kalah     : 25 (41.67%)\n",
+            "\n",
+            "Dataset Training Menang   : 28 (58.33%)\n",
+            "Dataset Training Kalah : 20 (41.67%)\n",
+            "\n",
+            "Dataset Test Menang      : 7 (58.33%)\n",
+            "Dataset Test Kalah     : 5 (41.67%)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import KFold\n",
+        "from sklearn.model_selection import cross_val_score\n",
+        "from sklearn.metrics import classification_report\n",
+        "from sklearn.metrics import confusion_matrix\n",
+        "from sklearn.metrics import accuracy_score\n",
+        "from sklearn.linear_model import LogisticRegression\n",
+        "from sklearn.tree import DecisionTreeClassifier\n",
+        "from sklearn.neighbors import KNeighborsClassifier\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "from sklearn.discriminant_analysis import LinearDiscriminantAnalysis\n",
+        "from sklearn.naive_bayes import GaussianNB\n"
+      ],
+      "metadata": {
+        "id": "YpqzKtaf_jrh"
+      },
+      "execution_count": 27,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **DATA SET INI LEBIH BAGUS MENGGUNAKAN ALGORITMA GaussianNB**\n"
+      ],
+      "metadata": {
+        "id": "Lf0bPuvuAEvp"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "nb = GaussianNB()\n",
+        "nb.fit(x_train, y_train)\n",
+        "predictions = nb.predict(x_test)\n",
+        "print(accuracy_score(y_test, predictions))\n",
+        "print(confusion_matrix(y_test, predictions))\n",
+        "print(classification_report(y_test, predictions))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "CZv2CsQQ_sYx",
+        "outputId": "7617c784-2225-408f-e78a-ed89010ed37f"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "1.0\n",
+            "[[7 0]\n",
+            " [0 5]]\n",
+            "              precision    recall  f1-score   support\n",
+            "\n",
+            "           0       1.00      1.00      1.00         7\n",
+            "           1       1.00      1.00      1.00         5\n",
+            "\n",
+            "    accuracy                           1.00        12\n",
+            "   macro avg       1.00      1.00      1.00        12\n",
+            "weighted avg       1.00      1.00      1.00        12\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "Kita memberikan data kita kepada pak CEO\n",
+        "Misal pak CEO, memilih pelatih dan tipe pemain sebagai berikut:\n",
+        "\n",
+        "pelatih : Menekan\n",
+        "Match : Kandang sendiri\n",
+        "Latihan : rutin\n",
+        "Stamina : Kuat karena terbiasa latihan berat\n",
+        "Mental : grogi , karena dapat tekanan dari pelatih\n",
+        "Kita prediksi hasil akhirnya"
+      ],
+      "metadata": {
+        "id": "D89jz6bmAafS"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "prediction_nb=nb.predict([[1,0,0,0,1]])\n",
+        "if prediction_nb[0] == 0:\n",
+        "    pred = \"Menang\"\n",
+        "else:\n",
+        "    pred = \"Kalah\"\n",
+        "print('Prediksi :',pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3psiy4qKAkT9",
+        "outputId": "098a0d06-cfab-4e5d-b2d3-6bb9592e127f"
+      },
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Prediksi : Kalah\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "prediction_nb=nb.predict([[0,1,0,0,0]])\n",
+        "if prediction_nb[0] == 0:\n",
+        "    pred = \"Menang\"\n",
+        "else:\n",
+        "    pred = \"Kalah\"\n",
+        "print('Prediksi :',pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dKfUJCSiELjC",
+        "outputId": "2cf35183-5adf-4a9f-b003-e78e0599ac64"
+      },
+      "execution_count": 35,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Prediksi : Menang\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
